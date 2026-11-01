@@ -2,25 +2,17 @@
   "name": "agentic-ui",
   "displayName": "Agentic UI",
   "version": "0.2.0",
-  "license": "LicenseRef-AgenticUI-Plugin",
-  "description": "Build and review interfaces with Agentic UI's published components, closed design tokens, specs and motion rules. Read-only. Sign in with a paid Agentic UI account.",
+  "description": "Read-only access to Agentic UI components, design tokens, specs and guidelines.",
   "author": {
-    "name": "Agentic UI",
-    "email": "support@agenticui.net",
-    "url": "https://staging.agenticui.dev"
+    "name": "30kstrategy LLC",
+    "email": "support@agenticui.net"
   },
-  "homepage": "https://staging.agenticui.dev",
+  "homepage": "https://agenticui.dev/",
+  "privacyPolicyUrl": "https://staging.agenticui.dev/privacy",
   "keywords": [
     "design-system",
-    "react",
-    "components",
+    "ui",
     "design-tokens",
-    "accessibility",
-    "motion",
-    "figma"
-  ],
-  "icon": "./assets/icon.png",
-  "supportUrl": "https://staging.agenticui.dev/support/",
-  "privacyPolicyUrl": "https://staging.agenticui.dev/privacy/",
-  "termsOfServiceUrl": "https://staging.agenticui.dev/terms/"
+    "components"
+  ]
 }

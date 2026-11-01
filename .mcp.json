@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "agentic-ds": {
+    "agentic-ui": {
       "type": "http",
       "url": "https://mcp.agenticui.dev/mcp"
     }
