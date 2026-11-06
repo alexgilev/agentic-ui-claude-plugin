@@ -21,8 +21,8 @@ The first time the assistant uses a tool, the app opens the Agentic UI sign-in p
 
 ## Privacy and terms
 
-- [Privacy policy](https://staging.agenticui.dev/privacy)
-- [Terms of use](https://staging.agenticui.dev/terms)
+- [Privacy policy](https://agenticui.dev/privacy)
+- [Terms of use](https://agenticui.dev/terms)
 
 ## Support
 
