@@ -1,7 +1,7 @@
 {
   "name": "agentic-ui",
   "displayName": "Agentic UI",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Read-only access to Agentic UI components, design tokens, specs and guidelines.",
   "author": {
     "name": "30kstrategy LLC",
@@ -9,6 +9,7 @@
   },
   "homepage": "https://agenticui.dev/",
   "privacyPolicyUrl": "https://agenticui.dev/privacy",
+  "termsOfServiceUrl": "https://agenticui.dev/terms",
   "keywords": [
     "design-system",
     "ui",

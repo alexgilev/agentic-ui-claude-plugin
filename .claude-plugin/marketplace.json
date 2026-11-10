@@ -1,0 +1,14 @@
+{
+  "name": "agentic-ui",
+  "description": "Marketplace for the Agentic UI plugin: read-only access to Agentic UI components, design tokens, specs and guidelines.",
+  "owner": {
+    "name": "30kstrategy LLC",
+    "email": "support@agenticui.net"
+  },
+  "plugins": [
+    {
+      "name": "agentic-ui",
+      "source": "./"
+    }
+  ]
+}
