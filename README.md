@@ -15,12 +15,16 @@ This repository is also a plugin marketplace. In a session, run:
 /plugin install agentic-ui --marketplace alexgilev/agentic-ui-claude-plugin
 ```
 
+This needs Claude Code 2.1.275 or later. On an older version, use the shell commands below.
+
 Or, from your shell, add the marketplace and then install the plugin:
 
 ```
 claude plugin marketplace add alexgilev/agentic-ui-claude-plugin
 claude plugin install agentic-ui@agentic-ui
 ```
+
+If a session is already open, run `/reload-plugins` to load the plugin.
 
 ## What it connects to
 
