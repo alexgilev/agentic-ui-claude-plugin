@@ -7,6 +7,25 @@ Agentic UI gives the assistant read-only access to Agentic UI components, design
 - One skill, `agentic-ui`. It gives the steps: find a component, read its spec, apply the design tokens, then check the guidelines.
 - One remote MCP server declaration. The plugin contains no program code, no scripts and no keys.
 
+## How to install
+
+This repository is also a plugin marketplace. In a session, run:
+
+```
+/plugin install agentic-ui --marketplace alexgilev/agentic-ui-claude-plugin
+```
+
+This needs Claude Code 2.1.275 or later. On an older version, use the shell commands below.
+
+Or, from your shell, add the marketplace and then install the plugin:
+
+```
+claude plugin marketplace add alexgilev/agentic-ui-claude-plugin
+claude plugin install agentic-ui@agentic-ui
+```
+
+If a session is already open, run `/reload-plugins` to load the plugin.
+
 ## What it connects to
 
 The plugin connects to one server: `https://mcp.agenticui.dev/mcp`. All traffic uses HTTPS. The server has 13 read-only tools. No tool changes your files, your account or your designs.
