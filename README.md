@@ -28,7 +28,7 @@ If a session is already open, run `/reload-plugins` to load the plugin.
 
 ## What it connects to
 
-The plugin connects to one server: `https://mcp.agenticui.dev/mcp`. All traffic uses HTTPS. The server has 13 read-only tools. No tool changes your files, your account or your designs.
+The plugin connects to one server: `https://mcp.agenticui.dev/mcp`. All traffic uses HTTPS. The server has 13 read-only tools. No tool changes your files, your account or your designs. Some apps also list one more tool, `setup_package_access`, which sets up access to the Agentic UI package registry. When package access is available for your account, it returns a short-lived registry credential, and the assistant saves it in your user npm settings so that it can install the package.
 
 ## What it sends
 
@@ -36,7 +36,7 @@ When the assistant calls a tool, the app sends the tool name and the tool inputs
 
 ## How to sign in
 
-The first time the assistant uses a tool, the app opens the Agentic UI sign-in page in your browser. Sign in with an existing Agentic UI account that includes design-system access. The app keeps the access token. You do not enter a key or a password in the conversation. To stop access, disconnect Agentic UI in the app.
+The first time the assistant uses a tool, the app opens the Agentic UI sign-in page in your browser. Sign in with an existing Agentic UI account that includes design-system access. The app keeps the access token. You do not enter a key or a password in the conversation. To stop access, disconnect Agentic UI in the app. If the assistant saved a registry credential, that credential stops working on its own within 60 minutes.
 
 ## Privacy and terms
 

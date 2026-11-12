@@ -5,7 +5,7 @@ description: Use when the user asks to recreate, rebuild, build or review an Age
 
 # Recreate an Agentic UI component or screen
 
-This skill tells the assistant how to recreate a component or a screen template of the Agentic UI docs site one-to-one. The steps have a fixed order: fetch the rules, write the import line, apply the tokens, compose the template. The tools of this plugin are read-only. They return published Agentic UI contracts. They do not change files, accounts or designs.
+This skill tells the assistant how to build or recreate a component or a screen template of the Agentic UI docs site one-to-one in the user's project. The steps have a fixed order, given in the section "Workflow". The tools of this plugin are read-only. They return published Agentic UI contracts. They do not change files, accounts or designs. Where the tool list shows `setup_package_access`, that tool can also return a short-lived credential for the package registry.
 
 ## Fidelity locks
 
@@ -15,6 +15,8 @@ These rules apply to every step.
 - If a result is `found: false` or an error, say what is missing. Do not guess, and do not use a similar item in its place.
 - Never write a raw hex color or a raw pixel value.
 - Never ask the user for a password, key or token in the conversation.
+- Never print, `cat` or echo the user npm config or a registry token, and never write a key or a token into a project file, a URL or a reply.
+- Build only from the package imports. Never copy raw component source, and never redraw an icon: use the icon names and imports that the answers give.
 
 ## Example prompts
 
@@ -22,6 +24,19 @@ These rules apply to every step.
 2. One component with all its states, steps 1 to 3: "Rebuild the Upload area component from the Agentic UI docs one-to-one, with each state that its stories show, and list every token you used."
 3. A full screen template, steps 1 to 4: "Recreate the Inbox screen from the Agentic UI docs in this project, exactly as the Screens page shows it."
 4. A full screen template, steps 1 to 4: "Rebuild the Agent Chat screen from the Agentic UI docs, and report each part that you could not match."
+
+## Workflow
+
+Do these steps in this order for every component, screen or page. Stop at the first step that fails and say why.
+
+1. Check the connection: the section "Before the first lookup".
+2. Set up package access: the section "Package access". Skip it when `npm whoami --registry=https://mcp.agenticui.dev/npm/` already prints `agentic-ds-buyer`.
+3. Install `@agentic-ui/design-system` with the project's package manager (see its lockfile): `npm install @agentic-ui/design-system`, `pnpm add`, `yarn add` or `bun add`.
+4. Apply the document setup once at the app root: `recreate.setup` of the component answer, as it is. It imports `styles.css` and then `document.css`, which sets the body font and resets the body margin to the zero spacing token (`--spacing-padding-none`), and gives the font links and the theme attribute.
+5. Search, and pick the composed component or template over its parts: step 1 of "Fetch the component rules". For example, take `navbar` over `navbar-link`, and `agent-chat` over the chat parts.
+6. Get the component with its story arguments and data: `stories[].args` and `recreate.usage` of the answer.
+7. Build the page or component: steps 2 to 4, from the package imports only.
+8. Self-check against the story: the section "Report the result".
 
 ## Setup
 
@@ -41,7 +56,7 @@ If the sign-in does not complete, tell the user that the tools of this plugin ar
 
 ### The package
 
-The package comes from the Agentic UI registry and needs the key of the account. If the `package.json` of the project does not list `@agentic-ui/design-system`, tell the user that the page `https://agenticui.dev/installation` gives the install steps. The user does those steps. Do not ask the user to put the key, or a text that holds the key, in the conversation. Do not install a package with a different name in its place.
+The package comes from the Agentic UI registry, which needs registry access on the user's machine. The section "Package access" says how to check it, how to set it up from this connection, and what the user does when that is not possible. Do not ask the user to put a key or a token, or a text that holds one, in the conversation. Do not install a package with a different name in its place.
 
 ## Before the first lookup
 
@@ -63,6 +78,19 @@ If the tool list has no tool for the step, do one of these. Then stop.
 
 If a call fails with a sign-in error, choose between the same two actions. With the Setup steps, tell the user to sign in again, also when the app shows the server as connected. Then stop.
 
+## Package access
+
+Do this in the project folder, before the install. The user sends no key, token or secret in the conversation.
+
+1. If you cannot run commands in the user's project, go to item 5. Otherwise run `npm whoami --registry=https://mcp.agenticui.dev/npm/`. If it prints `agentic-ds-buyer`, registry access works: continue with step 3 of "Workflow". If it fails with ENEEDAUTH or E401, go to item 2. If it fails in another way, for example E429, an HTTP 5xx status or a network error, tell the user that the registry is not available now, and stop.
+2. If the tool list shows `setup_package_access`, call it with no input. If it does not, go to item 5.
+3. The answer has `configured: true`: do what its `next` says, with its steps. Add the `npmrc` line to the project `.npmrc` if it is not there, and create the file if it is missing. In a project that uses Yarn 2 or later, skip the `registry` step and go to item 5, because Yarn does not read the npm config. Otherwise run the `registry` step command exactly as written, as one command. It saves a registry credential in the user npm config. Do not repeat the command or its credential in a reply, a file, a URL or a commit. Then run the `check` step. If it prints `agentic-ds-buyer`, continue with step 3 of "Workflow". If it fails with ENEEDAUTH or E401, do not call `setup_package_access` again: tell the user that the registry does not accept this account for the package, and go to item 5. If it fails in another way, tell the user that the registry is not available now, and stop.
+4. The answer has `configured: false`: package access from this connection is not available yet. Give the user its `message`, and say that the signing secret is a setting on the Agentic UI side, so the user has nothing to send. Then do its `npmrc` step: add the line to the project `.npmrc` if it is not there, and create the file if it is missing. The line holds no secret. Then go to item 5.
+5. Tell the user that the page `https://agenticui.dev/installation` gives the steps to set up registry access, that the user does them outside this conversation, and that the user tells you when they are done. Do not ask the user to paste a key, the copied install prompt or the output of `npm config` into the conversation. Then wait for the user.
+6. When the user says the steps are done, continue with step 3 of "Workflow" if you cannot run commands in the user's project. Otherwise run `npm whoami --registry=https://mcp.agenticui.dev/npm/`. If it prints `agentic-ds-buyer`, continue with step 3 of "Workflow". If it does not, tell the user that the registry does not accept the setup yet, give the page again, and stop.
+
+The credential of a `configured: true` answer ends at its `expiresAt` time, 60 minutes after the call. When the registry answers E401 or HTTP 401 after a `check` step that printed `agentic-ds-buyer`, call `setup_package_access` again and do item 3 again. When the registry answers E401 or HTTP 401 and no answer was `configured: true`, do items 5 and 6 again. If `setup_package_access` returns an error, do what the section "Errors" says.
+
 ## 1. Fetch the component rules
 
 1. Call `search_components` with the name on the docs page, for example `button` or `text input`.
@@ -79,10 +107,30 @@ For other questions, call `search_docs`, then `get_doc`. Call `get_library_index
 
 ```tsx
 import { Button } from "@agentic-ui/design-system";
-import "@agentic-ui/design-system/styles.css";
 ```
 
-- The package has two import paths: the package root for every component, and `@agentic-ui/design-system/styles.css` for the styles. Do not write a deeper path.
+<!-- BEGIN GENERATED: document setup -->
+```
+// App entry, once:
+import "@agentic-ui/design-system/styles.css";
+import "@agentic-ui/design-system/document.css";
+
+<!-- index.html, in <head>: -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Departure+Mono&family=Geist:wght@400;500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+
+// Theme, "light" or "dark", on <html> and <body>:
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  document.body.setAttribute("data-theme", theme);
+}
+applyTheme("light");
+// applyTheme("dark");
+```
+
+- The package has three import paths: the package root for every component, then `@agentic-ui/design-system/styles.css` and `@agentic-ui/design-system/document.css` for the styles, in that order. Do not write a deeper path.
+<!-- END GENERATED: document setup -->
 - Import the styles one time, at the entry of the app.
 - The `get_component` result has `recreate` for a component that the package exports. It gives the import line in `import`, the stylesheet import in `css` and the JSX of the default story in `usage`. Use the import line as it is. Take the props and values for your case from the stories and the spec, not only from `usage`.
 - If `recreate` is missing or `null`, the export name is the story file name in `sources.csf` of that result: `src/molecules/UploadArea.stories.tsx` gives `UploadArea`. The `name` field is a display name and is not always the export name.
@@ -122,7 +170,15 @@ If the tools return a screen template that is not in this table, do not do this 
 
 If the contract names a part that the installed package does not export, do not put a different component in its place. Report the part as not matched.
 
-## 5. Report the result
+## 5. Self-check and report the result
+
+Compare the build with the default story of the `get_component` answer before you report:
+
+- The same component, the same props and the same values as `stories[].args` and `recreate.usage`.
+- No value from the `forbidden` list.
+- The styles import of `recreate.css` at the app entry, the document setup of step 4 of "Workflow", and the `data-theme` value of each shipped theme.
+
+Correct each difference. Then report:
 
 - Name the components, props and tokens that you used.
 - Give the data version label from `get_source_info`.
